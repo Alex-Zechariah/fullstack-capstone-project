@@ -19,6 +19,7 @@ connectToDatabase().then(() => {
 
 
 app.use(express.json());
+app.use(express.static('public'));
 
 // Route files
 // Gift API Task 1: import the giftRoutes and store in a constant called giftroutes
