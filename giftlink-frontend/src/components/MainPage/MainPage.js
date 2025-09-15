@@ -50,7 +50,7 @@ function MainPage() {
                         <div className="card product-card">
 
                             {/* // Task 4: Display gift image or placeholder */}
-                            <img src={`${urlConfig.backendUrl}${gift.image}`} className="card-img-top" alt={gift.name} />
+                            <img src={gift.image} className="card-img-top" alt={gift.name} />
 
                             <div className="card-body">
 
