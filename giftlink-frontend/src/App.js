@@ -4,6 +4,7 @@ import MainPage from './components/MainPage/MainPage';
 import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
 import DetailsPage from './components/DetailsPage/DetailsPage';
+import SearchPage from './components/SearchPage/SearchPage'; // Import SearchPage
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
@@ -18,8 +19,9 @@ function App() {
           <Route path="/app" element={<MainPage />} />
           <Route path="/app/login" element={<LoginPage/>} />
           <Route path="/app/register" element={<RegisterPage />} />
-          {/* Task 8: Add the route to this page in App.js */}
           <Route path="/app/product/:productId" element={<DetailsPage />} />
+          {/* Add Routes for this in App.js */}
+          <Route path="/app/search" element={<SearchPage />} />
         </Routes>
         </>
   );

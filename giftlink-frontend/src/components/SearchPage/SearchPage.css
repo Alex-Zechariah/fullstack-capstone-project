@@ -1,26 +1,62 @@
+/* Task 10: Overall page styling for a cohesive and user-friendly design */
+.container {
+    max-width: 1200px;
+}
+
+.filter-section {
+    background-color: #f8f9fa;
+}
+
 /* Task 1: Style the search input field */
 .search-input {
-    /* Insert specific CSS properties here */
+    border-radius: 0.25rem 0 0 0.25rem;
 }
 
 /* Task 2: Style the search button */
 .search-button {
-    /* Insert specific CSS properties here */
+    border-radius: 0 0.25rem 0.25rem 0;
+    background-color: #007bff;
+    border-color: #007bff;
 }
 
 /* Task 3: Customize dropdown filters */
 .dropdown-filter {
-    /* Insert specific CSS properties here */
+    cursor: pointer;
 }
 
 /* Task 4: Style the age range slider */
 .age-range-slider {
-    /* Insert specific CSS properties here */
+    cursor: pointer;
 }
 
 /* Task 5: Enhance search results cards appearance */
 .search-results-card {
-    /* Insert specific CSS properties here */
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+    cursor: pointer;
 }
 
-/* Additional placeholders for tasks 6 to 10 */
+/* Task 7: Apply a hover effect to the search results cards */
+.search-results-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+}
+
+/* Task 8: Ensure images in search results are displayed appropriately */
+.search-card-img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Task 6: Style the "No products found" alert message */
+.no-products-alert {
+    text-align: center;
+}
+
+/* Task 9: Create a responsive layout for search results on various devices */
+@media (max-width: 768px) {
+    .filter-section {
+        margin-bottom: 1rem;
+    }
+}
