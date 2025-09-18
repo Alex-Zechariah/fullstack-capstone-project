@@ -9,16 +9,17 @@ export default function Navbar() {
 
     useEffect(() => {
         const authTokenFromSession = sessionStorage.getItem('auth-token');
-        const emailFromSession = sessionStorage.getItem('email');
-        if (authTokenFromSession && emailFromSession) {
+        const nameFromSession = sessionStorage.getItem('name');
+        if (authTokenFromSession && nameFromSession) {
             setIsLoggedIn(true);
-            setUserName(emailFromSession);
+            setUserName(nameFromSession);
         }
     }, [setIsLoggedIn, setUserName]);
 
     const handleLogout = () => {
         sessionStorage.removeItem('auth-token');
         sessionStorage.removeItem('email');
+        sessionStorage.removeItem('name');
         setIsLoggedIn(false);
         setUserName('');
         navigate('/app');
@@ -44,7 +45,7 @@ export default function Navbar() {
                     {isLoggedIn ? (
                         <>
                             <li className="nav-item">
-                                <span className="nav-link" style={{ color: "black" }}>Welcome, {userName}</span>
+                                <Link className="nav-link" to="/app/profile" style={{ color: "black", cursor: "pointer" }}>Welcome, {userName}</Link>
                             </li>
                             <li className="nav-item">
                                 <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
