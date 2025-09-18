@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const connectToDatabase = require('../models/db');
 const logger = require('../logger'); // Step 1 - Task 3: Create a Pino logger instance
+const { body, validationResult } = require('express-validator'); // Import for validation
 
 dotenv.config();
 
@@ -47,44 +48,88 @@ router.post('/register', async (req, res) => {
 });
 
 
-// POST /api/auth/login (NEW CODE FOR THIS LAB)
+// POST /api/auth/login (FROM PREVIOUS LAB)
 router.post('/login', async (req, res) => {
     try {
-        // Task 1: Connect to `giftsdb` in MongoDB
         const db = await connectToDatabase();
-        // Task 2: Access MongoDB `users` collection
         const collection = db.collection('users');
-
-        // Task 3: Check for user credentials in database
         const user = await collection.findOne({ email: req.body.email });
-        
-        // Task 7: Send appropriate message if user not found
         if (!user) {
             logger.error('User not found');
             return res.status(400).json({ error: "Invalid credentials" });
         }
-
-        // Task 4: Check if the password matches the encrypted password
         const passwordCompare = await bcryptjs.compare(req.body.password, user.password);
         if (!passwordCompare) {
             logger.error('Password mismatch');
             return res.status(400).json({ error: "Invalid credentials" });
         }
-
-        // Task 5: Fetch user details from database (already done by findOne)
         const userName = `${user.firstName} ${user.lastName}`;
         const userEmail = user.email;
-
-        // Task 6: Create JWT authentication if passwords match
         const payload = {
             user: {
                 id: user._id
             }
         };
         const authtoken = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
-
         logger.info('User logged in successfully');
         res.json({ authtoken, userName, userEmail });
+    } catch (e) {
+        logger.error(e.message);
+        return res.status(500).send('Internal server error');
+    }
+});
+
+// PUT /api/auth/update (NEW CODE FOR THIS LAB)
+router.put('/update', [
+    // Validation middleware for the request body
+    body('firstName').notEmpty().withMessage('First name is required'),
+    body('lastName').notEmpty().withMessage('Last name is required')
+], async (req, res) => {
+    try {
+        // Task 2: Validate the input using validationResult
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        // Task 3: Check if `email` is present in the header
+        const email = req.header('email');
+        if (!email) {
+            return res.status(401).json({ error: "Authentication error: email missing from header" });
+        }
+
+        // Task 4: Connect to MongoDB and access users collection
+        const db = await connectToDatabase();
+        const collection = db.collection('users');
+
+        // Task 5: Find user credentials in database
+        const existingUser = await collection.findOne({ email: email });
+        if (!existingUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const updatedUserData = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            updatedAt: new Date()
+        };
+
+        // Task 6: Update user credentials in database
+        await collection.updateOne(
+            { _id: existingUser._id },
+            { $set: updatedUserData }
+        );
+
+        // Task 7: Create JWT authentication with user._id as payload
+        const payload = {
+            user: {
+                id: existingUser._id
+            }
+        };
+        const authtoken = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
+
+        logger.info('User updated successfully');
+        res.json({ authtoken });
 
     } catch (e) {
         logger.error(e.message);
