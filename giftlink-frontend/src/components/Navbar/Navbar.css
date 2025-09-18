@@ -1,0 +1,13 @@
+.btn-link {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: rgba(0,0,0,.55); /* Matches Bootstrap's default nav-link color */
+  text-decoration: none;
+  font-size: 1rem; /* Matches Bootstrap's default nav-link font size */
+}
+
+.btn-link:hover {
+  color: rgba(0,0,0,.7); /* Matches Bootstrap's hover color */
+}
