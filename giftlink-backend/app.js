@@ -9,7 +9,7 @@ const app = express();
 app.use("*",cors());
 const port = 3060;
 
-// Connect to MongoDB; we just do this one time
+// Connect to MongoDB
 connectToDatabase().then(() => {
     pinoLogger.info('Connected to DB');
 })
@@ -19,7 +19,7 @@ app.use(express.json());
 
 // Route files
 const giftRoutes = require('./routes/giftRoutes');
-// Search API Task 1: import the searchRoutes and store in a constant called searchRoutes
+const authRoutes = require('./routes/authRoutes'); // Import authRoutes
 const searchRoutes = require('./routes/searchRoutes');
 
 const pinoHttp = require('pino-http');
@@ -28,7 +28,7 @@ app.use(pinoHttp({ logger }));
 
 // Use Routes
 app.use('/api/gifts', giftRoutes);
-// Search API Task 2: add the searchRoutes to the server by using the app.use() method.
+app.use('/api/auth', authRoutes); // Use authRoutes for the /api/auth path
 app.use('/api/search', searchRoutes);
 
 // Global Error Handler
