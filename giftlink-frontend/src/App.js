@@ -3,7 +3,8 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainPage from './components/MainPage/MainPage';
 import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
-import DetailsPage from './components/DetailsPage/DetailsPage'; // Add this import
+import DetailsPage from './components/DetailsPage/DetailsPage';
+import SearchPage from './components/SearchPage/SearchPage'; // Add this import
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
@@ -18,8 +19,8 @@ function App() {
                 <Route path="/app" element={<MainPage />} />
                 <Route path="/app/login" element={<LoginPage />} />
                 <Route path="/app/register" element={<RegisterPage />} />
-                {/* Task 8: Add the route to this page */}
                 <Route path="/app/product/:productId" element={<DetailsPage/>} />
+                <Route path="/app/search" element={<SearchPage/>} /> {/* Add this route */}
             </Routes>
         </>
     );
