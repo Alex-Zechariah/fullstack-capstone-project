@@ -1,49 +1,39 @@
+require('dotenv').config();
 const express = require('express');
-const router = express.Router();
-const connectToDatabase = require('../models/db');
-const logger = require('../logger');
+const cors = require('cors');
+const pinoLogger = require('./logger');
+const connectToDatabase = require('./models/db'); 
+const {loadData} = require("./util/import-mongo/index");
+const app = express();
+app.use("*",cors());
+const port = 3060;
 
-// Get all gifts
-router.get('/', async (req, res, next) => {
-    logger.info('/ called');
-    try {
-        // Task 1: Connect to MongoDB and store connection to db constant
-        const db = await connectToDatabase();
+connectToDatabase().then(() => {
+    pinoLogger.info('Connected to DB');
+})
+.catch((e) => console.error('Failed to connect to DB', e));
 
-        // Task 2: use the collection() method to retrieve the gift collection
-        const collection = db.collection("gifts");
+app.use(express.json());
 
-        // Task 3: Fetch all gifts using the collection.find method
-        const gifts = await collection.find({}).toArray();
+const giftRoutes = require('./routes/giftRoutes');
 
-        // Task 4: return the gifts using the res.json method
-        res.json(gifts);
-    } catch (e) {
-        logger.error('oops something went wrong', e)
-        next(e);
-    }
+const pinoHttp = require('pino-http');
+const logger = require('./logger');
+
+app.use(pinoHttp({ logger }));
+
+app.use('/api/gifts', giftRoutes);
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
 });
 
-// Get a single gift by ID
-router.get('/:id', async (req, res, next) => {
-    try {
-        // Task 1: Connect to MongoDB and store connection to db constant
-        const db = await connectToDatabase();
+app.get("/",(req,res)=>{
+    res.send("Inside the server")
+})
 
-        // Task 2: use the collection() method to retrieve the gift collection
-        const collection = db.collection("gifts");
-        const id = req.params.id;
-
-        // Task 3: Find a specific gift by ID
-        const gift = await collection.findOne({ id: id });
-
-        if (!gift) {
-            return res.status(404).send("Gift not found");
-        }
-        res.json(gift);
-    } catch (e) {
-        next(e);
-    }
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
-
-module.exports = router;
