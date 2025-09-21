@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './Profile.css';
-import {urlConfig} from '../../config';
+import { urlConfig } from '../../config';
 import { useAppContext } from '../../context/AuthContext';
 
 const Profile = () => {
-    const [userDetails, setUserDetails] = useState({});
-    const [updatedDetails, setUpdatedDetails] = useState({});
-    const {setUserName} = useAppContext();
+    const { setUserName } = useAppContext();
+    const [userDetails, setUserDetails] = useState({ firstName: '', lastName: '', email: '' });
+    const [updatedDetails, setUpdatedDetails] = useState({ firstName: '', lastName: '', password: '' });
     const [changed, setChanged] = useState("");
     const [editMode, setEditMode] = useState(false);
     const navigate = useNavigate();
@@ -21,10 +21,15 @@ const Profile = () => {
         }
     }, [navigate]);
 
-    const fetchUserProfile = async () => {
+    const fetchUserProfile = () => {
         const email = sessionStorage.getItem("email");
-        const name = sessionStorage.getItem('name');
-        const storedUserDetails = { name: name, email: email };
+        const name = sessionStorage.getItem('name') || '';
+        // Simple split for first/last name; adjust if your data format is different
+        const nameParts = name.split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(' ');
+
+        const storedUserDetails = { firstName, lastName, email };
         setUserDetails(storedUserDetails);
         setUpdatedDetails(storedUserDetails);
     };
@@ -46,32 +51,35 @@ const Profile = () => {
                 navigate("/app/login");
                 return;
             }
-            const payload = { ...updatedDetails };
+            
+            // Backend expects 'name' as firstName
+            const payload = { 
+                name: updatedDetails.firstName,
+                lastName: updatedDetails.lastName,
+                password: updatedDetails.password 
+            };
+
             const response = await fetch(`${urlConfig.backendUrl}/api/auth/update`, {
-                // Task 1: set method
                 method: "PUT",
-                // Task 2: set headers
                 headers: {
                     "Authorization": `Bearer ${authtoken}`,
                     "Content-Type": "application/json",
                     "Email": email,
                 },
-                // Task 3: set body to send user details
                 body: JSON.stringify(payload),
             });
 
             if (response.ok) {
-                // Task 4: set the new name in the AppContext
-                setUserName(updatedDetails.name);
-                // Task 5: set user name in the session
-                sessionStorage.setItem("name", updatedDetails.name);
+                const newName = `${updatedDetails.firstName} ${updatedDetails.lastName}`.trim();
+                setUserName(newName);
+                sessionStorage.setItem("name", newName);
                 setUserDetails(updatedDetails);
                 setEditMode(false);
-                setChanged("Name Changed Successfully!");
+                setChanged("Profile Updated Successfully!");
                 setTimeout(() => {
                     setChanged("");
                     navigate("/app");
-                }, 1000);
+                }, 1500);
             } else {
                 throw new Error("Failed to update profile");
             }
@@ -84,22 +92,31 @@ const Profile = () => {
         <div className="profile-container">
             {editMode ? (
                 <form onSubmit={handleSubmit}>
-                    <label>
-                        Email
-                        <input type="email" name="email" value={userDetails.email} disabled />
-                    </label>
-                    <label>
-                        Name
-                        <input type="text" name="name" value={updatedDetails.name || ''} onChange={handleInputChange} />
-                    </label>
-                    <button type="submit">Save</button>
+                    <h3>Edit Profile</h3>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input type="email" className="form-control" value={userDetails.email} disabled />
+                    </div>
+                    <div className="form-group">
+                        <label>First Name</label>
+                        <input type="text" name="firstName" className="form-control" value={updatedDetails.firstName || ''} onChange={handleInputChange} />
+                    </div>
+                    <div className="form-group">
+                        <label>Last Name</label>
+                        <input type="text" name="lastName" className="form-control" value={updatedDetails.lastName || ''} onChange={handleInputChange} />
+                    </div>
+                    <div className="form-group">
+                        <label>New Password (optional)</label>
+                        <input type="password" name="password" className="form-control" placeholder="Enter new password" onChange={handleInputChange} />
+                    </div>
+                    <button type="submit" className="btn btn-primary w-100">Save</button>
                 </form>
             ) : (
                 <div className="profile-details">
-                    <h1>Hi, {userDetails.name}</h1>
+                    <h1>Hi, {userDetails.firstName}</h1>
                     <p><b>Email:</b> {userDetails.email}</p>
-                    <button onClick={handleEdit}>Edit</button>
-                    <span style={{color:'green', height:'.5cm',display:'block', fontStyle:'italic', fontSize:'12px'}}>{changed}</span>
+                    <button className="btn btn-primary" onClick={handleEdit}>Edit Profile</button>
+                    <span className="success-message">{changed}</span>
                 </div>
             )}
         </div>

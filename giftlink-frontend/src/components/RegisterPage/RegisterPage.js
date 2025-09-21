@@ -70,11 +70,11 @@ function RegisterPage() {
                         <h2 className="text-center mb-4 font-weight-bold">Register</h2>
                         <div className="mb-3">
                             <label htmlFor="firstName" className="form-label">First Name</label>
-                            <input id="firstName" type="text" className="form-control" placeholder="Enter your firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                            <input id="firstName" type="text" className="form-control" placeholder="Enter your first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="lastName" className="form-label">Last Name</label>
-                            <input id="lastName" type="text" className="form-control" placeholder="Enter your lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                            <input id="lastName" type="text" className="form-control" placeholder="Enter your last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="email" className="form-label">Email</label>

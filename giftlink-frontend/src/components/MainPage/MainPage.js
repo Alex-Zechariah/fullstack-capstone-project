@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {urlConfig} from '../../config';
+import { urlConfig } from '../../config';
 
 function MainPage() {
     const [gifts, setGifts] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Task 1: Fetching gifts
         const fetchGifts = async () => {
             try {
                 let url = `${urlConfig.backendUrl}/api/gifts`;
@@ -24,19 +23,20 @@ function MainPage() {
         fetchGifts();
     }, []);
 
-    // Task 2: Navigate to details page
     const goToDetailsPage = (productId) => {
         navigate(`/app/product/${productId}`);
     };
 
-    // Task 3: Format timestamp
     const formatDate = (timestamp) => {
         const date = new Date(timestamp * 1000);
         return date.toLocaleDateString('default', { month: 'long', day: 'numeric', year: 'numeric' });
     };
 
     const getConditionClass = (condition) => {
-        return condition === "New" ? "list-group-item-success" : "list-group-item-warning";
+        if (condition === "New") return "condition-new";
+        if (condition === "Like New") return "condition-like-new";
+        if (condition === "Older") return "condition-older";
+        return "";
     };
 
     return (
@@ -44,24 +44,19 @@ function MainPage() {
             <div className="row">
                 {gifts.map((gift) => (
                     <div key={gift.id} className="col-md-4 mb-4">
-                        <div className="card product-card">
-                            {/* Task 4: Display gift image or placeholder */}
-                            <div className="image-placeholder">
-                                {gift.image ? (
-                                    <img src={gift.image} alt={gift.name} className="card-img-top" />
-                                ) : (
-                                    <div className="no-image-available">No Image Available</div>
-                                )}
-                            </div>
-                            <div className="card-body">
-                                {/* Task 5: Display gift name */}
+                        <div className="card h-100">
+                            <img src={gift.image || 'https://via.placeholder.com/150'} alt={gift.name} className="card-img-top" style={{ height: '200px', objectFit: 'cover' }} />
+                            <div className="card-body d-flex flex-column">
                                 <h5 className="card-title">{gift.name}</h5>
-                                <p className={`card-text ${getConditionClass(gift.condition)}`}>
-                                    {gift.condition}
+                                <p className="card-text">
+                                    <span className={`condition-badge ${getConditionClass(gift.condition)}`}>
+                                        {gift.condition}
+                                    </span>
                                 </p>
-                                {/* Task 6: Display the formatted date */}
-                                <p className="card-text date-added">
-                                    {formatDate(gift.date_added)}
+                                <p className="card-text mt-auto">
+                                    <small className="text-muted">
+                                        Posted on: {formatDate(gift.date_added)}
+                                    </small>
                                 </p>
                             </div>
                             <div className="card-footer">

@@ -1,15 +1,14 @@
 .profile-container {
     max-width: 500px;
-    margin: 2rem auto;
+    margin: 3rem auto;
     padding: 2rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #fff;
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-shadow);
 }
 
 .profile-details h1 {
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin-bottom: 1rem;
 }
 
@@ -18,38 +17,21 @@
     margin-bottom: 1.5rem;
 }
 
-.profile-container form {
-    display: flex;
-    flex-direction: column;
-}
-
-.profile-container label {
+.form-group {
     margin-bottom: 1rem;
-    font-weight: bold;
 }
 
-.profile-container input {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top: 0.5rem;
+.form-group label {
+    font-weight: 600;
 }
 
-.profile-container input:disabled {
+.form-control:disabled {
     background-color: #e9ecef;
 }
 
-.profile-container button {
-    padding: 0.75rem;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    font-size: 1rem;
+.success-message {
+    color: green;
+    display: block;
     margin-top: 1rem;
-}
-
-.profile-container button:hover {
-    background-color: #0056b3;
+    font-style: italic;
 }

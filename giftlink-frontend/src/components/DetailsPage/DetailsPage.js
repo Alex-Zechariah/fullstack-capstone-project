@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './DetailsPage.css';
-import {urlConfig} from '../../config';
+import { urlConfig } from '../../config';
 
 function DetailsPage() {
     const navigate = useNavigate();
@@ -11,13 +11,11 @@ function DetailsPage() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Task 1: Check for authentication and redirect
         const authenticationToken = sessionStorage.getItem('auth-token');
         if (!authenticationToken) {
             navigate('/app/login');
         }
 
-        // Task 2: Fetch gift details
         const fetchGift = async () => {
             try {
                 const url = `${urlConfig.backendUrl}/api/gifts/${productId}`;
@@ -35,16 +33,19 @@ function DetailsPage() {
         };
 
         fetchGift();
-        // Task 3: Scroll to top on component mount
         window.scrollTo(0, 0);
     }, [productId, navigate]);
 
-    // Task 4: Handle back click
     const handleBackClick = () => {
         navigate(-1);
     };
+    
+    const formatDate = (timestamp) => {
+        if (!timestamp) return 'N/A';
+        const date = new Date(timestamp * 1000);
+        return date.toLocaleDateString('default', { month: 'long', day: 'numeric', year: 'numeric' });
+    };
 
-    // The comments have been hardcoded for this project.
     const comments = [
         { author: "John Doe", comment: "I would like this!" },
         { author: "Jane Smith", comment: "Just DMed you." },
@@ -53,42 +54,37 @@ function DetailsPage() {
         { author: "Sarah Wilson", comment: "My family can use one. DM me if it is still available. Thank you!" }
     ];
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
-    if (!gift) return <div>Gift not found</div>;
+    if (loading) return <div className="container mt-5">Loading...</div>;
+    if (error) return <div className="container mt-5">Error: {error}</div>;
+    if (!gift) return <div className="container mt-5">Gift not found</div>;
 
     return (
         <div className="container mt-5">
-            <button className="btn btn-secondary mb-3" onClick={handleBackClick}>Back</button>
-            <div className="card product-details-card">
-                <div className="card-header text-white">
-                    <h2 className="details-title">{gift.name}</h2>
-                </div>
-                <div className="card-body">
-                    <div className="image-placeholder-large">
-                        {/* Task 5: Display gift image */}
-                        {gift.image ? (
-                            <img src={gift.image} alt={gift.name} className="product-image-large" />
-                        ) : (
-                            <div className="no-image-available-large">No Image Available</div>
-                        )}
+            <button className="btn btn-secondary mb-4" onClick={handleBackClick}>Back</button>
+            <div className="card">
+                <div className="row g-0">
+                    <div className="col-md-6">
+                        <img src={gift.image || 'https://via.placeholder.com/400'} alt={gift.name} className="details-img" />
                     </div>
-                    {/* Task 6: Display gift details */}
-                    <p><strong>Category:</strong> {gift.category}</p>
-                    <p><strong>Condition:</strong> {gift.condition}</p>
-                    <p><strong>Date Added:</strong> {gift.dateAdded}</p>
-                    <p><strong>Age (Years):</strong> {gift.age}</p>
-                    <p><strong>Description:</strong> {gift.description}</p>
+                    <div className="col-md-6">
+                        <div className="card-body">
+                            <h2 className="card-title">{gift.name}</h2>
+                            <p className="card-text"><strong>Category:</strong> {gift.category}</p>
+                            <p className="card-text"><strong>Condition:</strong> {gift.condition}</p>
+                            <p className="card-text"><strong>Date Added:</strong> {formatDate(gift.date_added)}</p>
+                            <p className="card-text"><strong>Age (Years):</strong> {gift.age_years}</p>
+                            <p className="card-text"><strong>Description:</strong> {gift.description}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="comments-section mt-4">
+            <div className="comments-section mt-5">
                 <h3 className="mb-3">Comments</h3>
-                {/* Task 7: Render comments section */}
                 {comments.map((comment, index) => (
                     <div key={index} className="card mb-3">
                         <div className="card-body">
-                            <p className="comment-author"><strong>{comment.author}:</strong></p>
-                            <p className="comment-text">{comment.comment}</p>
+                            <p className="comment-author">{comment.author}:</p>
+                            <p className="comment-text mb-0">{comment.comment}</p>
                         </div>
                     </div>
                 ))}

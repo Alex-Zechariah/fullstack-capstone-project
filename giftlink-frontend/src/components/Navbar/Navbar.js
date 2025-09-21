@@ -28,44 +28,43 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light" id='navbar_container'>
-            <Link className="navbar-brand" to="/app">GiftLink</Link>
-            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul className="navbar-nav">
-                    <li className="nav-item">
-                        <a className="nav-link" href="/home.html">Home</a>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/app">Gifts</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/app/search">Search</Link>
-                    </li>
-                </ul>
-                <ul className="navbar-nav ml-auto">
-                    {isLoggedIn ? (
-                        <>
-                            <li className="nav-item">
-                                <span className="nav-link" style={{color: "black"}}>Welcome, {userName}</span>
-                            </li>
-                            <li className="nav-item">
-                                <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
-                            </li>
-                        </>
-                    ) : (
-                        <>
-                            <li className="nav-item">
-                                <Link className="nav-link btn btn-link" to="/app/login">Login</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link btn btn-link" to="/app/register">Register</Link>
-                            </li>
-                        </>
-                    )}
-                </ul>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top" id='navbar_container'>
+            <div className="container-fluid">
+                <Link className="navbar-brand" to="/app">GiftLink</Link>
+                <div className="d-flex justify-content-between w-100">
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <a className="nav-link" href="/home.html">Home</a>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/app">Gifts</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/app/search">Search</Link>
+                        </li>
+                    </ul>
+                    <ul className="navbar-nav">
+                        {isLoggedIn ? (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/app/profile" style={{ color: "black" }}>Welcome, {userName}</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/app/login">Login</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/app/register">Register</Link>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+                </div>
             </div>
         </nav>
     );

@@ -5,9 +5,8 @@ import {urlConfig} from '../../config';
 import './SearchPage.css';
 
 function SearchPage() {
-    // Task 1: Initialize state variables
     const [searchQuery, setSearchQuery] = useState('');
-    const [ageRange, setAgeRange] = useState(6); // Initialize with a default value
+    const [ageRange, setAgeRange] = useState(6);
     const [searchResults, setSearchResults] = useState([]);
     const navigate = useNavigate();
 
@@ -15,7 +14,6 @@ function SearchPage() {
     const conditions = ['New', 'Like New', 'Older'];
 
     useEffect(() => {
-        // Fetch all products initially to populate the page
         const fetchProducts = async () => {
             try {
                 let url = `${urlConfig.backendUrl}/api/gifts`;
@@ -32,7 +30,6 @@ function SearchPage() {
         fetchProducts();
     }, []);
 
-    // Task 2: Fetch search results based on user inputs
     const handleSearch = async () => {
         const baseUrl = `${urlConfig.backendUrl}/api/search?`;
         const queryParams = new URLSearchParams({
@@ -53,63 +50,86 @@ function SearchPage() {
         }
     };
 
-    // Task 6: Navigate to the details page
     const goToDetailsPage = (productId) => {
         navigate(`/app/product/${productId}`);
+    };
+    
+    const getConditionClass = (condition) => {
+        if (condition === "New") return "condition-new";
+        if (condition === "Like New") return "condition-like-new";
+        if (condition === "Older") return "condition-older";
+        return "";
     };
 
     return (
         <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-8">
-                    <div className="filter-section mb-3 p-3 border rounded">
-                        <h5>Filters</h5>
-                        {/* Task 3 & 4: Dropdowns and Slider */}
+            <div className="row">
+                {/* Column 1: Filters */}
+                <div className="col-md-4">
+                    <div className="filter-container card p-4">
+                        <h4 className="mb-3">Filters</h4>
                         <div className="form-group">
                             <label htmlFor="categorySelect">Category</label>
-                            <select id="categorySelect" className="form-control my-1">
+                            <select id="categorySelect" className="form-control">
                                 <option value="">All</option>
                                 {categories.map(category => (<option key={category} value={category}>{category}</option>))}
                             </select>
                         </div>
                         <div className="form-group">
                             <label htmlFor="conditionSelect">Condition</label>
-                            <select id="conditionSelect" className="form-control my-1">
+                            <select id="conditionSelect" className="form-control">
                                 <option value="">All</option>
                                 {conditions.map(condition => (<option key={condition} value={condition}>{condition}</option>))}
                             </select>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="ageRange">Less than {ageRange} years</label>
+                            {/* Horizontally aligned slider and label */}
+                            <div className="d-flex justify-content-between align-items-center">
+                                <label htmlFor="ageRange" className="mb-0">Age</label>
+                                <span>Less than {ageRange} years</span>
+                            </div>
                             <input type="range" className="form-control-range" id="ageRange" min="1" max="10" value={ageRange} onChange={e => setAgeRange(e.target.value)} />
                         </div>
                     </div>
+                </div>
+
+                {/* Column 2: Search Bar and Results */}
+                <div className="col-md-8">
                     <div className="search-bar">
-                        {/* Task 7: Add text input field */}
                         <input type="text" className="form-control" placeholder="Search for items..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-                        {/* Task 8: Implement the search button */}
                         <button className="btn btn-primary" onClick={handleSearch}>Search</button>
                     </div>
-                    {/* Task 5: Display fetched search results */}
-                    <div className="search-results mt-4">
-                        {searchResults.length > 0 ? (
-                            searchResults.map(product => (
-                                <div key={product.id} className="card mb-3">
-                                    <img src={product.image} alt={product.name} className="card-img-top" />
-                                    <div className="card-body">
-                                        <h5 className="card-title">{product.name}</h5>
-                                        <p className="card-text">{product.description.slice(0, 100)}...</p>
+                    
+                    <div className="search-results">
+                        <div className="row">
+                            {searchResults.length > 0 ? (
+                                searchResults.map(product => (
+                                    <div key={product.id} className="col-lg-6 mb-4">
+                                        <div className="card h-100">
+                                            <img src={product.image || 'https://via.placeholder.com/150'} alt={product.name} className="card-img-top" />
+                                            <div className="card-body d-flex flex-column">
+                                                <h5 className="card-title">{product.name}</h5>
+                                                <p className="card-text">
+                                                    <span className={`condition-badge ${getConditionClass(product.condition)}`}>
+                                                        {product.condition}
+                                                    </span>
+                                                </p>
+                                                <p className="card-text text-muted small">{product.description.slice(0, 100)}...</p>
+                                            </div>
+                                            <div className="card-footer">
+                                                <button onClick={() => goToDetailsPage(product.id)} className="btn btn-primary w-100">View More</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="card-footer">
-                                        <button onClick={() => goToDetailsPage(product.id)} className="btn btn-primary">View More</button>
+                                ))
+                            ) : (
+                                <div className="col-12">
+                                    <div className="alert alert-info" role="alert">
+                                        No products found. Please revise your filters.
                                     </div>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="alert alert-info" role="alert">
-                                No products found. Please revise your filters.
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
