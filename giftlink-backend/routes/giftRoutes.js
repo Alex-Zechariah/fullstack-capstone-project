@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
         // Task 4: return the gifts using the res.json method
         res.json(gifts);
     } catch (e) {
-        logger.error('oops something went wrong', e)
+        logger.error('oops something went wrong', e);
         next(e);
     }
 });
